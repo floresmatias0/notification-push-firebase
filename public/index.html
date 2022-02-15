@@ -24,6 +24,8 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
+    <!-- <script src='https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js'></script>
+    <script src='https://www.gstatic.com/firebasejs/9.6.6/firebase-messaging.js'></script> -->
     <title>React App</title>
   </head>
   <body>
@@ -40,4 +42,50 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   </body>
+  <script type='module'>
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js";
+    import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-messaging.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBl-ji7XX2hDsdWbq9rvgKTf4SKKrqtGq0",
+        authDomain: "alkemyong-d419d.firebaseapp.com",
+        projectId: "alkemyong-d419d",
+        storageBucket: "alkemyong-d419d.appspot.com",
+        messagingSenderId: "947735171672",
+        appId: "1:947735171672:web:002175bb9533915985b02d",
+        measurementId: "G-JG759QC3Z7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const messaging = getMessaging(app);
+      if('serviceWorker' in navigator) {
+        navigator.serviceWorker
+          .register('./firebase-messaging-sw.js')
+          .then(registration => {
+            console.log("Registration successful, scope is:", registration.scope);
+
+            getToken(messaging, { vapidKey: 'BFpXG0b7zue2LtbuEH1uZ9Fk5nxW3JujtynUmc_luwzaZp1YLZzFs9cyM_0rWJOtSDS4CY1_NDPUe09QWOG5W1g'})
+            .then(currentToken => {
+                if (currentToken) {
+                // Send the token to your server and update the UI if necessary
+                // ...
+                console.log("Token", currentToken)
+                } else {
+                // Show permission request UI
+                console.log(
+                    "No registration token available. Request permission to generate one."
+                );
+                // ...
+                }
+            })
+            .catch(err => {
+                console.log("An error occurred while retrieving token. ", err);
+                // ...
+            });
+          })
+          .catch(err => {
+            console.log("Service worker registration failed, error:"  , err );
+          }); 
+      }
+  </script>
 </html>
